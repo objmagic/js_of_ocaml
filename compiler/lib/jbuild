@@ -39,7 +39,7 @@
   (action (with-stdout-to ${@}
            (progn
             (echo "let s = \"")
-            (echo ${version:js_of_ocaml})
+            (echo ${version:js_of_ocaml-compiler})
             (echo "\"\n")
             (cat ../../git_version.ml.in))))
   ))
