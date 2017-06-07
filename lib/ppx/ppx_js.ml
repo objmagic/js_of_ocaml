@@ -164,6 +164,8 @@ let invoker ?(extra_types = []) uplift downlift body arguments =
   let local_types =
     res :: List.map Arg.name (extra_types @ arguments)
   in
+  let local_types =
+    List.map (fun s -> {txt=s; loc=Location.none}) local_types in
   let result = List.fold_right Exp.newtype local_types invoker in
 
   default_loc := default_loc';
@@ -204,6 +206,7 @@ let method_call ~loc obj meth args =
            Js.unsafe "meth_call" [eobj; str (unescape meth); eargs])
       (Arg.make () :: List.map (fun (label,_) -> Arg.make ~label ()) args)
   in
+  let meth = {txt=meth; loc=Location.none} in
   Exp.apply invoker (
     app_arg obj :: args
     @ [app_arg
@@ -238,6 +241,7 @@ let prop_get ~loc:_ ~prop_loc obj prop =
          | [only_arg] -> Js.unsafe "get" [only_arg; str (unescape prop)])
       [Arg.make ()]
   in
+  let prop = {txt=prop; loc=Location.none} in
   Exp.apply invoker (
     [ app_arg obj
     ; app_arg
@@ -282,6 +286,7 @@ let prop_set ~loc ~prop_loc obj prop value =
         | _ -> assert false)
       [Arg.make (); Arg.make ()]
   in
+  let prop = {txt=prop; loc=Location.none} in
   Exp.apply invoker (
     [ app_arg obj
     ; app_arg value
